@@ -4,8 +4,10 @@
  */
 package textovesoubory;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 
 /**
@@ -22,7 +24,7 @@ public class TextoveSoubory {
                 "itnetwork" + File.separator + "oldapi.txt");
         file.getParentFile().mkdirs();
         
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))){
             bw.write("Prvni radek");
             bw.newLine();
             bw.write("Tento text je na novem radku");
@@ -42,6 +44,16 @@ public class TextoveSoubory {
         }
         catch (Exception e){
             System.out.println("Do souboru se nepovedlo zapsat");
+        }
+        
+        try(BufferedReader br = new BufferedReader(new FileReader(file))){
+            String s;
+            while((s = br.readLine()) != null){
+                System.out.println(s);
+            }
+        }
+        catch(Exception e){
+            System.out.println("Chyba pri cteni ze souboru.");
         }
     }
     
