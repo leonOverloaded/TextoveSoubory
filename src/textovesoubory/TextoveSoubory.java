@@ -9,6 +9,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 /**
  * vyukove pasmo IT Network
@@ -20,6 +25,7 @@ public class TextoveSoubory {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        //older version
         File file = new File(System.getProperty("user.home") + File.separator + 
                 "itnetwork" + File.separator + "oldapi.txt");
         file.getParentFile().mkdirs();
@@ -38,7 +44,7 @@ public class TextoveSoubory {
         }
         //druhy parametr konstruktoru je true, specifikuje PRIPSANI do existujiciho souboru
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))){
-            bw.write("Pripsay radek");
+            bw.write("Pripsat radek");
             bw.newLine();
             bw.flush();
         }
@@ -54,6 +60,34 @@ public class TextoveSoubory {
         }
         catch(Exception e){
             System.out.println("Chyba pri cteni ze souboru.");
+        }
+        
+        //newest version
+        Path path = Path.of(System.getProperty("user.home"), "itnetwork", "newapi.txt");
+        try{
+            Files.createDirectories(path.getParent());
+            Files.writeString(path, "Prvni radek" + System.lineSeparator(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.writeString(path, "Tento radek je na druhem radku" + System.lineSeparator(), StandardOpenOption.APPEND);
+            Files.writeString(path, "A do tretice" + System.lineSeparator(), StandardOpenOption.APPEND);
+        }
+        catch(IOException ex){
+            System.out.println("Chyba pri zapisu do souboru: " + ex.getLocalizedMessage());
+        }
+        //pripsani radku do jiz existujiciho souboru
+        try{
+            Files.writeString(path, "Tento text je na poslednim radku" + System.lineSeparator(),  StandardOpenOption.APPEND);
+        }
+        catch(IOException ex){
+            System.out.println("Chyba pri zapisu do souboru: " + ex.getLocalizedMessage());
+        }
+        //Cteni ze souboru
+        //metoda readAllLines() ze tridy Files vraci kolekci List<String>
+        try{
+            List<String> lines = Files.readAllLines(path);
+            lines.forEach(System.out::println);
+        }
+        catch(IOException ex){
+            System.out.println("Chyba pri cteni souboru: " + ex.getMessage());
         }
     }
     
